@@ -1,0 +1,32 @@
+# ambienti virtuali
+venv/
+.venv/
+env/
+ENV/
+**/minicheck_env/
+**/site-packages/
+
+# python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# notebook cache
+.ipynb_checkpoints/
+
+# dati e modelli pesanti (usa Git LFS se servono)
+data/
+datasets/
+checkpoints/
+models/
+*.pt
+*.bin
+*.ckpt
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

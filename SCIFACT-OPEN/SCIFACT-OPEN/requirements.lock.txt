@@ -1,0 +1,19 @@
+joblib==1.4.2
+numpy==1.19.4
+pandas==1.1.5
+pyarrow==10.0.1
+python-dateutil==2.9.0.post0
+pytz==2025.2
+scikit-learn==0.23.2
+scipy==1.9.3
+six==1.17.0
+threadpoolctl==3.5.0
+
+per ricreare ambiente :
+cd C:\Users\riccardo\Desktop\codiceArticoloFCScifact\scifact-open
+rmdir /s /q .venv
+"C:\Python38\python.exe" -m venv --copies .venv
+call .venv\Scripts\activate.bat
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -r requirements.lock.txt
+
