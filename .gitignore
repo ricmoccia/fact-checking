@@ -30,3 +30,7 @@ models/
 Thumbs.db
 .vscode/
 .idea/
+MiniCheck/ckpts/
+*.pt
+*.bin
+*.ckpt
