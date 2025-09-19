@@ -1,0 +1,32 @@
+# Requirements minimali per iniziare - Python 3.8
+# Installa solo le dipendenze essenziali per far funzionare il core system
+
+# Core web framework
+fastapi==0.88.0
+uvicorn==0.20.0
+
+# Data handling
+pandas==1.5.3
+numpy==1.24.3
+python-dotenv==1.0.0
+
+# Database essenziale
+psycopg2-binary==2.9.7
+sqlalchemy==1.4.48
+
+# Configurazione
+pyyaml==6.0
+
+# Web requests
+requests==2.31.0
+aiohttp==3.8.5
+
+# Logging e utilities
+tqdm==4.65.0
+
+# Text processing basico
+beautifulsoup4==4.12.2
+clean-text==0.6.0
+
+# Testing
+pytest==7.4.0

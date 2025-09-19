@@ -1,0 +1,85 @@
+ 
+# VeriFact System - Development Configuration
+
+database:
+  host: localhost
+  port: 5432
+  database: verifact_dev
+  username: verifact_user
+  password: verifact_password
+  pool_size: 5
+  max_overflow: 10
+
+models:
+  embedding_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  llm_model: "gemma:3b"
+  embedding_dimension: 384
+  max_chunk_size: 512
+  chunk_overlap: 50
+  temperature: 0.1
+
+api:
+  news_api_key: "your_newsapi_key_here"
+  openai_api_key: null
+  anthropic_api_key: null
+  gemini_api_key: null
+
+news_sources:
+  - name: "NewsAPI"
+    url: "https://newsapi.org/v2/top-headlines"
+    enabled: true
+    quality_weight: 0.8
+    rate_limit: 1000  # requests per day
+    
+  - name: "RSS_Feeds"
+    sources:
+      - "https://rss.cnn.com/rss/edition.rss"
+      - "https://feeds.bbci.co.uk/news/rss.xml" 
+      - "https://www.repubblica.it/rss/homepage/rss2.0.xml"
+      - "https://www.corriere.it/rss/homepage.xml"
+      - "https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml"
+    enabled: true
+    quality_weight: 0.9
+    
+processing:
+  batch_size: 16
+  max_workers: 2
+  text_quality_threshold: 0.6
+  summary_length_ratio: 0.3
+  entity_confidence_threshold: 0.8
+  supported_languages: ["en", "it", "es", "fr", "de"]
+  
+retrieval:
+  max_results: 50
+  similarity_threshold: 0.7
+  rerank_top_k: 10
+  query_expansion_enabled: true
+  cross_encoder_model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  vector_search_timeout: 30
+  
+verification:
+  confidence_threshold: 0.7
+  evidence_weight_threshold: 0.5
+  max_reasoning_steps: 5
+  bias_detection_enabled: true
+  uncertainty_quantification_enabled: true
+  max_llm_tokens: 2000
+  
+logging:
+  level: DEBUG
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/verifact_dev.log"
+  max_file_size: 10485760  # 10MB
+  backup_count: 5
+
+dashboard:
+  host: "0.0.0.0"
+  port: 8501
+  debug: true
+  auto_reload: true
+  
+api_server:
+  host: "0.0.0.0"
+  port: 8000
+  debug: true
+  reload: true

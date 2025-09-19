@@ -1,0 +1,107 @@
+ version: '3.8'
+
+services:
+  # PostgreSQL Database with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: verifact_postgres
+    environment:
+      POSTGRES_DB: verifact_dev
+      POSTGRES_USER: verifact_user
+      POSTGRES_PASSWORD: verifact_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - verifact_network
+    restart: unless-stopped
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: verifact_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - verifact_network
+    restart: unless-stopped
+
+  # VeriFact API Service
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: verifact_api
+    environment:
+      - VERIFACT_ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - "8000:8000"
+    volumes:
+      - ..:/app
+      - /app/venv  # Exclude virtual environment
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - verifact_network
+    restart: unless-stopped
+    command: ["python", "-m", "uvicorn", "api.endpoints:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  # VeriFact Dashboard  
+  dashboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: verifact_dashboard
+    environment:
+      - VERIFACT_ENV=development
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+    ports:
+      - "8501:8501"
+    volumes:
+      - ..:/app
+      - /app/venv  # Exclude virtual environment
+    depends_on:
+      - postgres
+      - api
+    networks:
+      - verifact_network
+    restart: unless-stopped
+    command: ["streamlit", "run", "dashboard/main_app.py", "--server.address", "0.0.0.0"]
+
+  # Ollama for local LLM (optional)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: verifact_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - verifact_network
+    restart: unless-stopped
+    # Uncomment below if you have NVIDIA GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  postgres_data:
+  redis_data:
+  ollama_data:
+
+networks:
+  verifact_network:
+    driver: bridge
